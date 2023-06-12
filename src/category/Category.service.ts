@@ -32,6 +32,7 @@ export class CategoryService {
       this.commonService.handleExceptions(error)
     }
   }
+  //nuevo cambio
 
   async findOne(term: string) {
     let category:Category|Category[];
