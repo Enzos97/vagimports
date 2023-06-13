@@ -15,6 +15,7 @@ export class CustomersService {
   ){}
   async create(createCustomerDto: CreateCustomerDto) {
     try {
+      console.log(createCustomerDto)
       const {fullName, email, dni, cuit, address, city, province, paymentMethod } = createCustomerDto
   
       let findCustomerEmail = await this.customerModel.findOne({email})

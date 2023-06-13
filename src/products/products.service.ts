@@ -38,9 +38,13 @@ export class ProductsService {
 
   async findAll(paginationDto:PaginationDto) {
     try {
-      const { limit = 10, offset = 0, brand, model, search } = paginationDto;
+      const { limit = 10, offset = 0, category, brand, model, search } = paginationDto;
 
       const query = this.productModel.find();
+
+      if(category){
+        query.where('category', category)
+      }
 
       if (brand && model) {
         query.where('brand', brand).where('model', model);

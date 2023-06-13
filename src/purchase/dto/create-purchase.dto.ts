@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { ArrayMinSize, ArrayNotEmpty, IsArray, IsBoolean, IsEmpty, IsIn, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
+import { ArrayMinSize, ArrayNotEmpty, IsArray, IsBoolean, IsEmpty, IsIn, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
 import { Customer } from "src/customers/entities/customer.entity";
 import { PaymentList, PaymentMethod } from "src/customers/types/TypePayment.type";
 import { StatusList, StatusTypes } from "../types/StatusTypes.type";
@@ -11,9 +11,7 @@ export class CreatePurchaseDto {
     @ArrayMinSize(1)
     products:any[]
 
-    @IsEmpty()
-    @Type(() => Customer)
-    @ValidateNested()
+    @IsObject()
     Customer:any;
 
     @IsNumber()

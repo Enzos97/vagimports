@@ -20,8 +20,6 @@ export class Purchase extends Document {
     payType: string;
     @Prop({required:true})
     shiping: boolean;
-    @Prop({required:true})
-    nombre:string;
     @Prop({required:false,default:Date.now})
     orderDate: Date;
     @Prop({required:false,default:Date.now})

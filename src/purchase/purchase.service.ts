@@ -8,6 +8,9 @@ import { Purchase } from './entities/purchase.entity';
 import { CustomersService } from 'src/customers/customers.service';
 import { ProductsService } from '../products/products.service';
 import { ProductQuantity } from './interfaces/ProductQuantity.interface';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { SortDirection } from 'src/types/sort.type';
+import { StatusList, StatusTypes } from './types/StatusTypes.type';
 
 
 @Injectable()
@@ -60,18 +63,12 @@ export class PurchaseService {
     console.log("productsWithDetails",productsWithDetails);
     console.log("totalWithoutDiscount",totalWithoutDiscount);
     console.log("totalWithDiscount",totalWithDiscount);
-    //createPurchaseDto.Customer = customer.customer
     createPurchaseDto.Customer=customer.customer.id
     createPurchaseDto.products=productsWithDetails
     createPurchaseDto.totalWithDiscount=totalWithDiscount
     createPurchaseDto.totalWithOutDiscount=totalWithoutDiscount
     try {
       const newOrder = await this.purchaseModel.create(createPurchaseDto)
-      // newOrder.customer=customer.customer
-      // newOrder.products=productsWithDetails
-      // newOrder.totalWithDiscount=totalWithoutDiscount
-      // newOrder.totalWithOutDiscount=totalWithoutDiscount
-      //await newOrder.save()
       console.log("newOrder",newOrder);
       return newOrder
     } catch (error) {
@@ -80,19 +77,85 @@ export class PurchaseService {
 
   }
 
-  async findAll() {
-    return await this.purchaseModel.find().populate('Customer');
+  async findAll(paginationDto: PaginationDto) {
+    try {
+      const { limit = 10, offset = 0, orderDate, totalWithOutDiscount, status } = paginationDto;
+  
+      const query = this.purchaseModel.find().populate('Customer');
+  
+      if (orderDate&&status) {
+        query.sort({ orderDate: SortDirection[orderDate] }).where('status', status);
+      }
+      else if (totalWithOutDiscount&&status) {
+        query.sort({ totalWithOutDiscount: SortDirection[totalWithOutDiscount] }).where('status', status);
+      }
+      else if (orderDate) {
+        query.sort({ orderDate: SortDirection[orderDate] });
+      }
+      else if (totalWithOutDiscount) {
+        query.sort({ totalWithOutDiscount: SortDirection[totalWithOutDiscount] });
+      }
+      else if (status) {
+        query.where('status', status);
+      }
+  
+      const totalElements = await this.purchaseModel.countDocuments(query).exec();
+  
+      query.limit(limit).skip(offset);
+  
+      const orders = await query.exec();
+  
+      const maxpages = Math.ceil(totalElements / limit);
+      const currentpage = Math.floor(offset / limit) + 1;
+  
+      return {
+        orders,
+        totalElements,
+        maxpages,
+        currentpage,
+      };
+    } catch (error) {
+      this.commonService.handleExceptions(error);
+    }
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} purchase`;
   }
 
-  update(id: number, updatePurchaseDto: UpdatePurchaseDto) {
-    return `This action updates a #${id} purchase`;
+  async update(id: string, updatePurchaseDto: UpdatePurchaseDto) {
+    try {
+      if(updatePurchaseDto.state===StatusTypes.ACCEPTED){
+        const purchase = await this.purchaseModel.findById(id).populate('products.product');
+
+        if (purchase) {
+          const productsToUpdate = purchase.products;
+  
+          for (const productToUpdate of productsToUpdate) {
+            const productId = productToUpdate.product._id;
+            const quantityToUpdate = productToUpdate.quantity;
+  
+            const product = await this.productsService.findOne(productId);
+  
+            if (product) {
+              product.currentStock -= quantityToUpdate;
+              await product.save();
+            }
+          }
+        }
+      }
+      const updateStatus = await this.purchaseModel.findByIdAndUpdate(id, updatePurchaseDto, { new: true })
+      return updateStatus;
+    } catch (error) {
+      this.commonService.handleExceptions(error)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} purchase`;
+  async remove(id: string) {
+    try {
+      return await this.purchaseModel.findByIdAndRemove(id).exec();
+    } catch (error) {
+      this.commonService.handleExceptions(error)
+    }
   }
 }
