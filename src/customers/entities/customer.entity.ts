@@ -5,10 +5,19 @@ import { Document } from "mongoose";
 @Schema()
 export class Customer {
 
-    @Prop({required:true})
+    @Prop({
+        required:true,
+        set: (val: string) => val.toLowerCase().trim(),
+        get: (val: string) => val,
+    })
     fullName:string;
 
-    @Prop({required:true,unique:true})
+    @Prop({
+        required:true,
+        unique:true,
+        set: (val: string) => val.toLowerCase().trim(),
+        get: (val: string) => val,
+    })
     email:string;
 
     @Prop({required:true})
@@ -20,10 +29,18 @@ export class Customer {
     @Prop({required:true})
     address:string;
 
-    @Prop({required:true})
+    @Prop({
+        required:true,
+        set: (val: string) => val.toLowerCase().trim(),
+        get: (val: string) => val,
+    })
     city:string;
 
-    @Prop({required:true})
+    @Prop({
+        required:true,
+        set: (val: string) => val.toLowerCase().trim(),
+        get: (val: string) => val,
+    })
     province:string;  
 
     @Prop({required:true})
