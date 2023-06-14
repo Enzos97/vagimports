@@ -24,8 +24,7 @@ export class Product extends Document {
     images: string[];
     @Prop({
         required:true,
-        set: (val: string) => val.toLowerCase().trim(),
-        get: (val: string) => val,
+
     })
     title: string;
     @Prop({required:true})
@@ -33,8 +32,6 @@ export class Product extends Document {
     @Prop({
         required:false,
         default:"",
-        set: (val: string) => val.toLowerCase().trim(),
-        get: (val: string) => val,
     })
     description: string;
     @Prop({required:true,default:0})

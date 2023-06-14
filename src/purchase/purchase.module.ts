@@ -6,13 +6,17 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Purchase, PurchaseSchema } from './entities/purchase.entity';
 import { CustomersModule } from 'src/customers/customers.module';
 import { ProductsModule } from 'src/products/products.module';
+import { MercadopagoModule } from 'src/mercadopago/mercadopago.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Purchase.name, schema: PurchaseSchema }]),
     CommonModule,
     CustomersModule,
-    ProductsModule
+    ProductsModule,
+    MercadopagoModule,
+    MailModule
   ],
   controllers: [PurchaseController],
   providers: [PurchaseService,MongooseModule]

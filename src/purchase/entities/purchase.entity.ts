@@ -17,7 +17,7 @@ export class Purchase extends Document {
     @Prop({required:false})
     totalWithDiscount: number;
     @Prop({required:true})
-    payType: string;
+    payType: PaymentMethod;
     @Prop({required:true})
     shiping: boolean;
     @Prop({required:false,default:Date.now})

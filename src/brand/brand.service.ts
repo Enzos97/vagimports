@@ -19,23 +19,25 @@ export class BrandService {
 
   async findAll(marca:string) {
     if(marca){
-      const modelos = await this.brandModel.findOne({name:marca})
+      const modelos = await this.brandModel.findOne({name:marca}).populate('models')
       return modelos.models
     }
-    const marcas = await this.brandModel.find()
+    const marcas = await this.brandModel.find().populate('models')
     return marcas
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} prueba`;
+  async findOne(id: string) {
+    const modelos = await this.brandModel.findById(id).populate('models')
+    console.log('modelos',modelos)
+    return modelos
   }
 
-  update(id: number, updatePruebaDto: UpdatePruebaDto) {
-    return `This action updates a #${id} prueba`;
+  async update(id: string, updatePruebaDto: UpdatePruebaDto) {
+    return this.brandModel.findByIdAndUpdate(id,updatePruebaDto,{new:true})
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} prueba`;
+  async remove(id: string) {
+    return await this.brandModel.findByIdAndRemove(id)
   }
   //////////////////////////
   async createBrands(createBrandDto: CreateBrandDto) {

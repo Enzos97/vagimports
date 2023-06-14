@@ -8,8 +8,7 @@ import { CommonService } from 'src/common/common.service';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { error } from 'console';
-import { CategoryService } from 'src/Category/Category.service';
-import { Category } from 'src/Category/entities/category.entity';
+import { CategoryService } from 'src/category/category.service';
 
 @Injectable()
 export class ProductsService {

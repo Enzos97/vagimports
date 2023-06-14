@@ -7,8 +7,11 @@ import { CommonModule } from './common/common.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PurchaseModule } from './purchase/purchase.module';
-import { CategoryModule } from './Category/Category.module';
-import { BrandModule } from './prueba/brand.module';
+import { CategoryModule } from './category/category.module';
+import { BrandModule } from './brand/brand.module';
+import { ModelCarModule } from './model-car/model-car.module';
+import { MercadopagoModule } from './mercadopago/mercadopago.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -19,7 +22,10 @@ import { BrandModule } from './prueba/brand.module';
     CommonModule, 
     PurchaseModule, 
     CategoryModule,
-    BrandModule
+    BrandModule,
+    ModelCarModule,
+    MercadopagoModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

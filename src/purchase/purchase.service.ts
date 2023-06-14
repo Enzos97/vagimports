@@ -11,6 +11,9 @@ import { ProductQuantity } from './interfaces/ProductQuantity.interface';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { SortDirection } from 'src/types/sort.type';
 import { StatusList, StatusTypes } from './types/StatusTypes.type';
+import { MercadopagoService } from '../mercadopago/mercadopago.service';
+import { PaymentMethod } from 'src/customers/types/TypePayment.type';
+import { MailService } from 'src/mail/mail.service';
 
 
 @Injectable()
@@ -21,12 +24,18 @@ export class PurchaseService {
     private commonService: CommonService,
     private readonly customersService:CustomersService,
     private readonly productsService:ProductsService,
+    private readonly mercadopagoService:MercadopagoService,
+    private readonly mailService:MailService
   ){}
   async create(createPurchaseDto: CreatePurchaseDto) {
     console.log('dtoOrder',createPurchaseDto)
     let productsWithDetails: ProductQuantity[] = [];
     let totalWithoutDiscount = 0;
     let totalWithDiscount = 0;
+    const customerEmail = createPurchaseDto.Customer.email 
+    console.log('customerEmail',customerEmail);
+    
+
 
     const customer = await this.customersService.create(createPurchaseDto.Customer)
   
@@ -70,6 +79,12 @@ export class PurchaseService {
     try {
       const newOrder = await this.purchaseModel.create(createPurchaseDto)
       console.log("newOrder",newOrder);
+      if(newOrder.payType==PaymentMethod.MERCADOPAGO){
+        let linkMP = await this.mercadopagoService.create(newOrder.products)
+        let code = this.generateCode()
+        await this.mailService.send_code_mail(customerEmail,newOrder.id,code)
+        return {orden:newOrder, linkMP:linkMP }
+      }
       return newOrder
     } catch (error) {
       this.commonService.handleExceptions(error)
@@ -157,5 +172,11 @@ export class PurchaseService {
     } catch (error) {
       this.commonService.handleExceptions(error)
     }
+  }
+
+  ////////////////////////////////Helper/////////////////////////
+  generateCode(){
+    const code = Math.floor(Math.random() * (999999 - 100000 + 1) + 100000);  
+    return code
   }
 }
