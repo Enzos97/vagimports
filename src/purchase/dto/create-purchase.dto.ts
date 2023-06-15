@@ -46,4 +46,7 @@ export class CreatePurchaseDto {
     @IsOptional()
     state: StatusTypes;
     
+    @IsOptional()
+    @IsString()
+    tokenClient:number;
 }
