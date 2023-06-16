@@ -33,13 +33,4 @@ export class PurchaseController {
   remove(@Param('id',MongoIdPipe) id: string) {
     return this.purchaseService.remove(id);
   }
-  ///////////////////Client Actions//////////////////////////////
-  @Get('client/purchase/:code')
-  getClientPurchase(@Param('code') code:string) {
-    return this.purchaseService.getPurchaseClient(code);
-  }
-  @Patch('client/purchase/:code/:id')
-  uploadClientPurchase(@Param('id',MongoIdPipe) id:string, @Body() updatePurchaseDto: UpdatePurchaseDto){
-    return this.purchaseService.uploadPurchaseClient(id,updatePurchaseDto)
-  }
 }
