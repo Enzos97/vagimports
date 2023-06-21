@@ -12,6 +12,8 @@ import { BrandModule } from './brand/brand.module';
 import { ModelCarModule } from './model-car/model-car.module';
 import { MercadopagoModule } from './mercadopago/mercadopago.module';
 import { MailModule } from './mail/mail.module';
+import { UploadImageModule } from './upload-image/upload-image.module';
+import { VersionModelModule } from './version-model/version-model.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { MailModule } from './mail/mail.module';
     ModelCarModule,
     MercadopagoModule,
     MailModule,
+    UploadImageModule,
+    VersionModelModule,
   ],
   controllers: [AppController],
   providers: [AppService],

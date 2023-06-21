@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { ArrayMinSize, ArrayNotEmpty, IsArray, IsBoolean, IsEmpty, IsIn, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import { ArrayMinSize, ArrayNotEmpty, IsArray, IsBoolean, IsEmpty, IsIn, IsNumber, IsObject, IsOptional, IsString, Max, ValidateNested } from "class-validator";
 import { Customer } from "src/customers/entities/customer.entity";
 import { PaymentList, PaymentMethod } from "src/customers/types/TypePayment.type";
 import { StatusList, StatusTypes } from "../types/StatusTypes.type";
@@ -44,6 +44,9 @@ export class CreatePurchaseDto {
 
     @IsIn(StatusList)
     @IsOptional()
-    state: StatusTypes;
-    
+    status: StatusTypes;
+
+    @IsOptional()
+    @IsNumber()
+    tokenClient:number;
 }

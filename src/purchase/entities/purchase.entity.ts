@@ -26,5 +26,9 @@ export class Purchase extends Document {
     payDate: Date;
     @Prop({required:false,default:StatusTypes.PENDING})
     status: StatusTypes;
+    @Prop({required:false,default:null})
+    tokenClient:number;
+    @Prop({required:false,default:null})
+    proofOfPayment:string[];
 }
 export const PurchaseSchema = SchemaFactory.createForClass(Purchase);

@@ -13,7 +13,7 @@ export class MailService {
     async send_code_mail(user: string, id:string, code: number) {
       try {
         console.log('mail dto',user,id,code)
-        const verificationLink = `https://localhost:3003/purchase/update/client/${id}`;
+        const verificationLink = `https://localhost:3003/purchase/token`;
     
         await this.mailerService.sendMail({
           to: user,

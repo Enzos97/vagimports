@@ -19,11 +19,28 @@ export class BrandService {
 
   async findAll(marca:string) {
     if(marca){
-      const modelos = await this.brandModel.findOne({name:marca}).populate('models')
-      return modelos.models
+      const modelos = await this.brandModel
+      .findOne({ name: marca })
+      .populate({
+        path: 'models',
+        populate: {
+          path: 'versions',
+          model: 'VersionModel' // Reemplaza 'Version' con el nombre correcto del modelo de Version
+        }
+      });
+      return modelos.models;
     }
-    const marcas = await this.brandModel.find().populate('models')
-    return marcas
+    const marcas = await this.brandModel
+    .find()
+    .populate({
+      path: 'models',
+      populate: {
+        path: 'versions',
+        model: 'VersionModel' // Reemplaza 'Version' con el nombre correcto del modelo de Version
+      }
+    });
+
+  return marcas;
   }
 
   async findOne(id: string) {

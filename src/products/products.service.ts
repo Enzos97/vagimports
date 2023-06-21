@@ -7,8 +7,10 @@ import { Model, Types } from 'mongoose';
 import { CommonService } from 'src/common/common.service';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { PaginationDto } from '../common/dto/pagination.dto';
-import { error } from 'console';
 import { CategoryService } from 'src/category/category.service';
+import { ModelCarService } from 'src/model-car/model-car.service';
+import { VersionModelService } from 'src/version-model/version-model.service';
+import { UploadImageService } from 'src/upload-image/upload-image.service';
 
 @Injectable()
 export class ProductsService {
@@ -16,19 +18,35 @@ export class ProductsService {
     @InjectModel(Product.name) 
     private productModel: Model<Product>,
     private commonService: CommonService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private modelCarService: ModelCarService,
+    private versionModelService: VersionModelService,
+    private uploadImageService:UploadImageService
   ){}
   async create(createProductDto: CreateProductDto) {
     try{
+      const uploadImages = await this.uploadImageService.uploadFiles(createProductDto.title,createProductDto.images)
+      createProductDto.images=uploadImages.imageUrls
       const createdProduct = await this.productModel.create(createProductDto);
 
       const category:any = await this.categoryService.findOne(createProductDto.category);
+      const modelcar:any = await this.modelCarService.findByName(createProductDto.model)
+      const version:any = await this.versionModelService.findByName(createProductDto.version)
+
       console.log('category',category)
       if(!category){
-        throw new NotFoundException(error)
+        throw new NotFoundException('la categoria ingresada no existe')
+      }
+      if(!modelcar){
+        throw new NotFoundException('el modelo ingresado no existe')
+      }
+      if(!version){
+        throw new NotFoundException('la version ingresada no existe')
       }
       const categoryPush = await this.categoryService.addProduct({categoryId:category._id,productId:createdProduct.id})
+      const versionPush = await this.versionModelService.addProduct({versionId:version._id,productId:createdProduct.id})
       console.log('categoyPush',categoryPush)
+      console.log('versionPush',versionPush)
       return createdProduct;
     }catch(error){
       this.commonService.handleExceptions(error)
@@ -100,6 +118,8 @@ export class ProductsService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
+      const uploadImages = await this.uploadImageService.uploadFiles(updateProductDto.title,updateProductDto.images)
+      updateProductDto.images=uploadImages.imageUrls
       const updateProduct = await this.productModel.findByIdAndUpdate(id, updateProductDto, { new: true }).exec();
       return updateProduct
     } catch (error) {

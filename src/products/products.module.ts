@@ -5,6 +5,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './entities/product.entity';
 import { CommonModule } from 'src/common/common.module';
 import { CategoryModule } from 'src/category/category.module';
+import { ModelCarModule } from 'src/model-car/model-car.module';
+import { VersionModelModule } from 'src/version-model/version-model.module';
+import { UploadImageModule } from 'src/upload-image/upload-image.module';
 
 
 
@@ -13,6 +16,9 @@ import { CategoryModule } from 'src/category/category.module';
   MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
     CommonModule,
     CategoryModule,
+    ModelCarModule,
+    VersionModelModule,
+    UploadImageModule
   ],
   controllers: [ProductsController],
   providers: [ProductsService],

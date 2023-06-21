@@ -8,15 +8,17 @@ import { CustomersModule } from 'src/customers/customers.module';
 import { ProductsModule } from 'src/products/products.module';
 import { MercadopagoModule } from 'src/mercadopago/mercadopago.module';
 import { MailModule } from 'src/mail/mail.module';
+import { UploadImageModule } from 'src/upload-image/upload-image.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Purchase.name, schema: PurchaseSchema }]),
-    CommonModule,
     CustomersModule,
     ProductsModule,
     MercadopagoModule,
-    MailModule
+    MailModule,
+    CommonModule,
+    UploadImageModule
   ],
   controllers: [PurchaseController],
   providers: [PurchaseService,MongooseModule]

@@ -23,7 +23,10 @@ export class PurchaseController {
   findOne(@Param('id') id: string) {
     return this.purchaseService.findOne(id);
   }
-
+  @Post('client/proof/')
+  findByCode(@Body('code') code: number) {
+    return this.purchaseService.findByCode(code);
+  }
   @Patch(':id')
   update(@Param('id',MongoIdPipe) id: string, @Body() updatePurchaseDto: UpdatePurchaseDto) {
     return this.purchaseService.update(id, updatePurchaseDto);

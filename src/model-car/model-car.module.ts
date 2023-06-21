@@ -13,6 +13,7 @@ import { BrandModule } from 'src/brand/brand.module';
     BrandModule
   ],
   controllers: [ModelCarController],
-  providers: [ModelCarService]
+  providers: [ModelCarService],
+  exports: [ModelCarService]
 })
 export class ModelCarModule {}

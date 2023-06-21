@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,11 +9,12 @@ import { CustomersService } from 'src/customers/customers.service';
 import { ProductsService } from '../products/products.service';
 import { ProductQuantity } from './interfaces/ProductQuantity.interface';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { SortDirection } from 'src/types/sort.type';
+import { SortDirection } from 'src/common/types/sort.type';
 import { StatusList, StatusTypes } from './types/StatusTypes.type';
 import { MercadopagoService } from '../mercadopago/mercadopago.service';
 import { PaymentMethod } from 'src/customers/types/TypePayment.type';
 import { MailService } from 'src/mail/mail.service';
+import { UploadImageService } from 'src/upload-image/upload-image.service';
 
 
 @Injectable()
@@ -25,7 +26,8 @@ export class PurchaseService {
     private readonly customersService:CustomersService,
     private readonly productsService:ProductsService,
     private readonly mercadopagoService:MercadopagoService,
-    private readonly mailService:MailService
+    private readonly mailService:MailService,
+    private readonly uploadImageService:UploadImageService
   ){}
   async create(createPurchaseDto: CreatePurchaseDto) {
     console.log('dtoOrder',createPurchaseDto)
@@ -77,14 +79,20 @@ export class PurchaseService {
     createPurchaseDto.totalWithDiscount=totalWithDiscount
     createPurchaseDto.totalWithOutDiscount=totalWithoutDiscount
     try {
-      const newOrder = await this.purchaseModel.create(createPurchaseDto)
+      let newOrder = await this.purchaseModel.create(createPurchaseDto)
       console.log("newOrder",newOrder);
       if(newOrder.payType==PaymentMethod.MERCADOPAGO){
         let linkMP = await this.mercadopagoService.create(newOrder.products)
         let code = this.generateCode()
+        console.log('code',code)
+        newOrder.tokenClient=code
+        await newOrder.save()
         await this.mailService.send_code_mail(customerEmail,newOrder.id,code)
         return {orden:newOrder, linkMP:linkMP }
       }
+      let code = this.generateCode()
+      newOrder.tokenClient=code
+      await newOrder.save()
       return newOrder
     } catch (error) {
       this.commonService.handleExceptions(error)
@@ -134,29 +142,50 @@ export class PurchaseService {
     }
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} purchase`;
+  async findOne(id: string) {
+    try{
+      const order = await this.purchaseModel.findById(id);
+      if(!order) {
+        let notFoundError = new NotFoundException('Orden not found');
+        this.commonService.handleExceptions(notFoundError)
+      }
+      return order
+    }catch(error){
+      this.commonService.handleExceptions(error)
+    };
   }
 
   async update(id: string, updatePurchaseDto: UpdatePurchaseDto) {
     try {
-      if(updatePurchaseDto.state===StatusTypes.ACCEPTED){
+      if(updatePurchaseDto.status===StatusTypes.ACCEPTED){
         const purchase = await this.purchaseModel.findById(id).populate('products.product');
-
+        console.log('purchase1',purchase)
         if (purchase) {
           const productsToUpdate = purchase.products;
-  
+          console.log('productsToUpdate',productsToUpdate);
+          
           for (const productToUpdate of productsToUpdate) {
             const productId = productToUpdate.product._id;
             const quantityToUpdate = productToUpdate.quantity;
-  
+            console.log('quantityToUpdate',quantityToUpdate);
             const product = await this.productsService.findOne(productId);
-  
+            console.log('product',product);
             if (product) {
               product.currentStock -= quantityToUpdate;
               await product.save();
             }
           }
+        }
+      }
+      if(updatePurchaseDto.proofOfPayment){
+        const purchase = await this.purchaseModel.findById(id).populate('products.product');
+        if(purchase){
+          console.log('purchase1',purchase)
+          const uploadDocument = await this.uploadImageService.uploadFiles(id,updatePurchaseDto.proofOfPayment)
+          console.log(uploadDocument)
+          purchase.proofOfPayment = uploadDocument.imageUrls
+          console.log('purchase2',purchase)
+          return await purchase.save()
         }
       }
       const updateStatus = await this.purchaseModel.findByIdAndUpdate(id, updatePurchaseDto, { new: true })
@@ -174,6 +203,14 @@ export class PurchaseService {
     }
   }
 
+  ////////////////////////////////Client/////////////////////////
+  async findByCode(code:number){
+    const order = await this.purchaseModel.findOne({tokenClient:code})
+    if (!order){
+      throw new NotFoundException('el codigo ingresado es incorrecto.')
+    }
+    return order
+  }
   ////////////////////////////////Helper/////////////////////////
   generateCode(){
     const code = Math.floor(Math.random() * (999999 - 100000 + 1) + 100000);  

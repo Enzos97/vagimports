@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Category } from './entities/category.entity';
@@ -35,33 +35,53 @@ export class CategoryService {
   //nuevo cambio
 
   async findOne(term: string) {
-    let category:Category|Category[];
-    if (isMongoId(term)) {
-      // Si el identificador es un ID de MongoDB válido
-      category = await this.categoryModel.findById(term).exec();
-    } else {
-      // Si el identificador es el nombre de la categoría
-      category = await this.categoryModel.find( {"name":
-      { $regex: new RegExp("^" + term, "i") } })
-      category=category[0]
+    try {
+      let category:Category|Category[];
+      if (isMongoId(term)) {
+        // Si el identificador es un ID de MongoDB válido
+        category = await this.categoryModel.findById(term).exec();
+      } else {
+        // Si el identificador es el nombre de la categoría
+        category = await this.categoryModel.find( {"name":
+        { $regex: new RegExp("^" + term, "i") } })
+        category=category[0]
+      }
+
+      if(!category){
+        throw new NotFoundException('la categoria no existe.')
+      }
+      return category;
+    } catch (error) {
+      this.commonService.handleExceptions(error)
     }
-    return category;
   }
 
   async addProduct(addProductDto:AddProductDto){
-    const addProduct = await this.categoryModel.findByIdAndUpdate(
-      addProductDto.categoryId,
-      { $push: { products: addProductDto.productId} },
-      { new: true },
-    );
-    return addProduct
+    try {
+      const addProduct = await this.categoryModel.findByIdAndUpdate(
+        addProductDto.categoryId,
+        { $push: { products: addProductDto.productId} },
+        { new: true },
+      );
+      return addProduct
+    } catch (error) {
+      this.commonService.handleExceptions(error)
+    }
   }
 
-  update(id: string, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} falopa`;
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    try {
+      return await this.categoryModel.findByIdAndUpdate(id,updateCategoryDto,{new:true})
+    } catch (error) {
+      this.commonService.handleExceptions(error)
+    }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} falopa`;
+  async remove(id: string) {
+    try {
+      return await this.categoryModel.findByIdAndRemove(id)
+    } catch (error) {
+      this.commonService.handleExceptions(error)
+    }
   }
 }

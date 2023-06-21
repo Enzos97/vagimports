@@ -41,7 +41,7 @@ export class ModelCarService {
 
   async findAll() {
     try {
-      const allModels = await this.modelCarModel.find()
+      const allModels = await this.modelCarModel.find().populate('versions')
       return allModels
     } catch (error) {
       this.commonService.handleExceptions(error)
@@ -57,6 +57,17 @@ export class ModelCarService {
     }
   }
 
+  async findByName(name:string){
+    try {
+      const model = await this.modelCarModel.findOne({name})
+      if(!model){
+        throw new NotFoundException('el modelo no existe')
+      }
+      return model
+    } catch (error) {
+      this.commonService.handleExceptions(error)
+    }
+  }
   async update(id: string, updateModelCarDto: UpdateModelCarDto) {
     try {
       const findModel = await this.modelCarModel.findByIdAndUpdate(id,updateModelCarDto)

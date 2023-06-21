@@ -1,7 +1,7 @@
 import { Type } from "class-transformer";
 import { IsNumber, IsOptional, IsPositive, IsString, Matches, Min } from "class-validator";
 import { StatusTypes } from "src/purchase/types/StatusTypes.type";
-import { SortDirection } from "src/types/sort.type";
+import { SortDirection } from "src/common/types/sort.type";
 
 export class PaginationDto{
     @IsOptional()

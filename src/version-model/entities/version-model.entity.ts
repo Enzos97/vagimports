@@ -1,9 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-
 @Schema()
-export class ModelCar extends Document {
+export class VersionModel extends Document {
     @Prop({
         require:true,
         set: (val: string) => val.toLowerCase().trim(),
@@ -11,14 +10,11 @@ export class ModelCar extends Document {
     })
     name:string;
 
-    @Prop({required:false})
-    image:string
-
     @Prop({ type: Types.ObjectId, ref: 'Brand' })
-    brand: Types.ObjectId;
+    model: Types.ObjectId;
 
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'VersionModel' }] })
-    versions: Types.ObjectId[];
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'Product' }] })
+    products:Types.ObjectId[];
 }
 
-export const ModelCarSchema = SchemaFactory.createForClass(ModelCar);
+export const VersionModelSchema = SchemaFactory.createForClass(VersionModel);

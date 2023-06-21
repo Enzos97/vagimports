@@ -64,10 +64,10 @@ export class UploadImageController {
 
   //   return { imageUrl };
   // }
-  @Post()
-  async uploadFiles(@Body() body: { nombre: string, imagenes: string[] }) {
-    return this.uploadImageService.uploadFiles(body);
-  }
+  // @Post()
+  // async uploadFiles(@Body() body: { nombre: string, imagenes: string[] }) {
+  //   return this.uploadImageService.uploadFiles(body);
+  // }
   @Get()
   findAll() {
     return this.uploadImageService.findAll();

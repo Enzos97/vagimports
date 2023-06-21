@@ -18,6 +18,12 @@ export class Product extends Document {
     model: string;
     @Prop({required:true})
     price: number;
+    @Prop({
+        required:true,
+        set: (val: string) => val.toLowerCase().trim(),
+        get: (val: string) => val,
+    })
+    version: string;
     @Prop({default:0})
     discount?: number;
     @Prop({required:false})

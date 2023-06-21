@@ -54,7 +54,7 @@ export class UploadImageService {
     
      
   // }
-  async uploadFiles(body: { nombre: string, imagenes: string[] }) {
+  async uploadFiles(name: string, images: string[]) {
     const projectId = 'vagimports-backend'; // Reemplaza con el ID de tu proyecto en Google Cloud
     const bucketName = 'vagimport-images'; // Reemplaza con el nombre del bucket en Google Cloud Storage
 
@@ -64,13 +64,13 @@ export class UploadImageService {
     const imageUrls: string[] = [];
     
     let v =0
-    for (const base64Data of body.imagenes) {
+    for (const base64Data of images) {
       // Decodifica el contenido base64 de la imagen
       const imageData = base64Data.replace(/^data:image\/\w+;base64,/, '');
       const imageBuffer = Buffer.from(imageData, 'base64');
 
       
-      const fileName = `${Date.now()}_${body.nombre}_v${v}`;
+      const fileName = `${Date.now()}_${name}_v${v}`;
       v++
       // Crea un archivo en el bucket de Google Cloud Storage
       const file = bucket.file(fileName);

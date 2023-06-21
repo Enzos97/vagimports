@@ -9,6 +9,9 @@ export class CreateProductDto {
     @IsString()
     model: string;
 
+    @IsString()
+    version: string
+    
     @IsNumber()
     price: number;
 

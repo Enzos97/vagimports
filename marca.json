@@ -1,0 +1,20 @@
+{
+    "marca":{
+        "nombre":"Volskwagen",
+        "modelos":[
+            {
+                "modelo":"Gol",
+                "versiones":[
+                    {
+                       "version":"trend",
+                       "productos":[
+                            "id1",
+                            "id2",
+                            "id3"
+                       ]
+                    }
+                ]
+            }
+        ]
+    }
+}
