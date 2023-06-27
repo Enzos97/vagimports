@@ -15,7 +15,7 @@ export class Brand {
     image:string;
     
     @Prop({ type: [{ type: Types.ObjectId, ref: 'ModelCar' }] })
-    models: Types.ObjectId[];
+    models: Types.ObjectId[]|any;
     // @Prop({required:false})
     // models:Models[]
 

@@ -3,6 +3,7 @@ import { ArrayMinSize, ArrayNotEmpty, IsArray, IsBoolean, IsEmpty, IsIn, IsNumbe
 import { Customer } from "src/customers/entities/customer.entity";
 import { PaymentList, PaymentMethod } from "src/customers/types/TypePayment.type";
 import { StatusList, StatusTypes } from "../types/StatusTypes.type";
+import { ObjectId } from "mongoose";
 
 
 export class CreatePurchaseDto {
@@ -12,7 +13,7 @@ export class CreatePurchaseDto {
     products:any[]
 
     @IsObject()
-    Customer:any;
+    Customer:Customer;
 
     @IsNumber()
     @IsOptional()
@@ -49,4 +50,8 @@ export class CreatePurchaseDto {
     @IsOptional()
     @IsNumber()
     tokenClient:number;
+
+    @IsOptional()
+    @IsBoolean()
+    isFacturaA:boolean
 }

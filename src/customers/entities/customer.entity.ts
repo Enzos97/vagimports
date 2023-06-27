@@ -23,11 +23,17 @@ export class Customer {
     @Prop({required:true})
     dni:string;
 
-    @Prop({required:true})
+    @Prop({required:false})
     cuit:string;
 
     @Prop({required:true})
     address:string;
+
+    @Prop({required:false})
+    department:string;
+
+    @Prop({required:true})
+    zipCode:string;
 
     @Prop({
         required:true,
@@ -41,8 +47,11 @@ export class Customer {
         set: (val: string) => val.toLowerCase().trim(),
         get: (val: string) => val,
     })
-    province:string;  
+    province:string; 
 
+    @Prop({required:true})
+    country:string;  
+    
     @Prop({required:true})
     paymentMethod:PaymentMethod
 }

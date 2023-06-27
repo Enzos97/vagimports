@@ -1,14 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { MongoIdPipe } from 'src/common/pipes/mongo-id.pipe';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { JwtAuthGuard } from 'src/admin/guards/jwt-auth.guard';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
@@ -23,6 +25,16 @@ export class ProductsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
+  }
+
+  @Get('cotizaciones/dolar-blue')
+  getCotizacionDolarBlue() {
+    return this.productsService.getCotizacionDolarBlue()
+  }
+
+  @Get('cotizaciones/producto')
+  updateCotizacionDolarBlueProducto() {
+    return this.productsService.updatePriceFromDolarCotization()
   }
 
   @Patch(':id')

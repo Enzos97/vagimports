@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { PaymentList, PaymentMethod } from "../types/TypePayment.type";
 
 export class CreateCustomerDto {
@@ -12,15 +12,26 @@ export class CreateCustomerDto {
     @IsString()
     dni:string;
 
+    @IsOptional()
     @IsString()
     cuit:string;
     
     @IsString()
     address:string;
 
+    @IsOptional()
+    @IsString()
+    department:string;
+
+    @IsString()
+    zipCode:string;
+
     @IsString()
     city:string;
-    
+
+    @IsString()
+    country:string;  
+
     @IsString()
     province:string;  
     

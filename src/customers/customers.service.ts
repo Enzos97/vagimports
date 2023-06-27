@@ -16,15 +16,18 @@ export class CustomersService {
   async create(createCustomerDto: CreateCustomerDto) {
     try {
       console.log(createCustomerDto)
-      const {fullName, email, dni, cuit, address, city, province, paymentMethod } = createCustomerDto
+      const {fullName, email, dni, cuit, address, department=null, city, zipCode, country, province, paymentMethod } = createCustomerDto
   
       let findCustomerEmail = await this.customerModel.findOne({email})
       if(findCustomerEmail){
         findCustomerEmail.address=address
+        findCustomerEmail.department=department
         findCustomerEmail.city=city
+        findCustomerEmail.zipCode=zipCode
         findCustomerEmail.province=province
+        findCustomerEmail.country=country
         findCustomerEmail.paymentMethod=paymentMethod
-        findCustomerEmail.save()
+        await findCustomerEmail.save()
         return {customer:findCustomerEmail,message:'Existing customer updated'};
       }
   

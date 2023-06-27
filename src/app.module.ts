@@ -14,6 +14,7 @@ import { MercadopagoModule } from './mercadopago/mercadopago.module';
 import { MailModule } from './mail/mail.module';
 import { UploadImageModule } from './upload-image/upload-image.module';
 import { VersionModelModule } from './version-model/version-model.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { VersionModelModule } from './version-model/version-model.module';
     MailModule,
     UploadImageModule,
     VersionModelModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

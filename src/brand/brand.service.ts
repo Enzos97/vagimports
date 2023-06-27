@@ -18,29 +18,54 @@ export class BrandService {
   }
 
   async findAll(marca:string) {
-    if(marca){
-      const modelos = await this.brandModel
-      .findOne({ name: marca })
-      .populate({
-        path: 'models',
-        populate: {
-          path: 'versions',
-          model: 'VersionModel' // Reemplaza 'Version' con el nombre correcto del modelo de Version
-        }
-      });
-      return modelos.models;
-    }
+    // if(marca){
+    //   const modelos = await this.brandModel
+    //   .findOne({ name: marca })
+    //   .populate({
+    //     path: 'models',
+    //     populate: {
+    //       path: 'versions',
+    //       model: 'VersionModel',
+    //       populate: {
+    //         path: 'products',
+    //         model: 'Product'
+    //       }
+    //     }
+    //   });
+    //   return modelos.models;
+    // }
     const marcas = await this.brandModel
     .find()
     .populate({
       path: 'models',
       populate: {
         path: 'versions',
-        model: 'VersionModel' // Reemplaza 'Version' con el nombre correcto del modelo de Version
+        model: 'VersionModel',
+        populate: {
+          path: 'products',
+          model: 'Product'
+        }
       }
     });
 
-  return marcas;
+    const cantidadDeMarcas = marcas.length;
+    const marcasConCantidad = marcas.map((marca) => {
+      const modelos = marca.models || [];
+      const cantidadDeModelos = modelos.length;
+      const modelosConCantidad = modelos.map((modelo) => {
+        const versiones = modelo.versions || [];
+        const cantidadDeVersiones = versiones.length;
+        const versionesConCantidad = versiones.map((version) => {
+          const productos = version.products || [];
+          const cantidadDeProductos = productos.length;
+          return { ...version.toObject(), cantidadDeProductos };
+        });
+        return { ...modelo.toObject(), cantidadDeVersiones, versions: versionesConCantidad };
+      });
+      return { ...marca.toObject(), cantidadDeModelos, models: modelosConCantidad };
+    });
+  
+    return { marcas: marcasConCantidad, cantidadDeMarcas };
   }
 
   async findOne(id: string) {

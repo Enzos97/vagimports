@@ -88,12 +88,28 @@ export class PurchaseService {
         newOrder.tokenClient=code
         await newOrder.save()
         await this.mailService.send_code_mail(customerEmail,newOrder.id,code)
-        return {orden:newOrder, linkMP:linkMP }
+        return {orden:newOrder.populate('Customer'), linkMP:linkMP }
+      }
+      if(newOrder.payType==PaymentMethod.TRANSFERENCIA){
+        let code = this.generateCode()
+        console.log('code',code)
+        newOrder.tokenClient=code
+        await newOrder.save()
+        await this.mailService.send_code_mail_Transferencia(customerEmail,newOrder.id,code)
+        return {orden:newOrder.populate('Customer') }
+      }
+      if(newOrder.payType==PaymentMethod.DEPOSITO){
+        let code = this.generateCode()
+        console.log('code',code)
+        newOrder.tokenClient=code
+        await newOrder.save()
+        await this.mailService.send_code_mail_Deposito(customerEmail,newOrder.id,code)
+        return {orden:newOrder.populate('Customer') }
       }
       let code = this.generateCode()
       newOrder.tokenClient=code
       await newOrder.save()
-      return newOrder
+      return newOrder.populate('Customer')
     } catch (error) {
       this.commonService.handleExceptions(error)
     }
@@ -122,15 +138,27 @@ export class PurchaseService {
         query.where('status', status);
       }
   
-      const totalElements = await this.purchaseModel.countDocuments(query).exec();
+      let totalElements = await this.purchaseModel.countDocuments(query).exec();
+      let currentpage:number;
+      let maxpages:number;
+      let orders ;
   
-      query.limit(limit).skip(offset);
-  
-      const orders = await query.exec();
-  
-      const maxpages = Math.ceil(totalElements / limit);
-      const currentpage = Math.floor(offset / limit) + 1;
-  
+      if (offset > 0) {
+        orders = await query
+          .find()
+          .limit(limit)
+          .skip((offset - 1)*limit)
+          .sort({ no: 1 })
+      }
+      if(totalElements>0){
+        if(totalElements%limit==0){
+          maxpages=totalElements/limit
+          currentpage=offset==0?offset+1:offset
+        }
+          maxpages=totalElements/limit
+          maxpages= Math.ceil(maxpages)
+          currentpage=(offset>0?offset:offset+1)
+      }
       return {
         orders,
         totalElements,
@@ -144,7 +172,7 @@ export class PurchaseService {
 
   async findOne(id: string) {
     try{
-      const order = await this.purchaseModel.findById(id);
+      const order = await this.purchaseModel.findById(id).populate('Customer');
       if(!order) {
         let notFoundError = new NotFoundException('Orden not found');
         this.commonService.handleExceptions(notFoundError)
@@ -205,7 +233,7 @@ export class PurchaseService {
 
   ////////////////////////////////Client/////////////////////////
   async findByCode(code:number){
-    const order = await this.purchaseModel.findOne({tokenClient:code})
+    const order = await this.purchaseModel.findOne({tokenClient:code}).populate('Customer')
     if (!order){
       throw new NotFoundException('el codigo ingresado es incorrecto.')
     }

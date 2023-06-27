@@ -50,7 +50,7 @@ export class ModelCarService {
 
   async findOne(id: string) {
     try {
-      const findModel = await this.modelCarModel.findById(id)
+      const findModel = await this.modelCarModel.findById(id).populate('versions')
       return findModel
     } catch (error) {
       this.commonService.handleExceptions(error)    
@@ -59,7 +59,7 @@ export class ModelCarService {
 
   async findByName(name:string){
     try {
-      const model = await this.modelCarModel.findOne({name})
+      const model = await this.modelCarModel.findOne({name}).populate('versions')
       if(!model){
         throw new NotFoundException('el modelo no existe')
       }

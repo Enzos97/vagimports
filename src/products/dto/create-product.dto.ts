@@ -11,7 +11,11 @@ export class CreateProductDto {
 
     @IsString()
     version: string
+
+    @IsNumber()
+    usdPrice: number
     
+    @IsOptional()
     @IsNumber()
     price: number;
 

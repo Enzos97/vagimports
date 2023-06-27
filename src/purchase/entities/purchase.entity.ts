@@ -30,5 +30,7 @@ export class Purchase extends Document {
     tokenClient:number;
     @Prop({required:false,default:null})
     proofOfPayment:string[];
+    @Prop({required:false,default:false})
+    isFacturaA:boolean;
 }
 export const PurchaseSchema = SchemaFactory.createForClass(Purchase);

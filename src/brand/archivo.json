@@ -1,0 +1,99 @@
+{
+    "marcas": [
+        {
+            "_id": "6489d82c1fc446dd67f3202d",
+            "name": "volkswagen",
+            "models": [
+                {
+                    "_id": "6489e1d1750a8b3d788d4033",
+                    "name": "polo",
+                    "image": "polo.jpeg",
+                    "brand": "6489d82c1fc446dd67f3202d",
+                    "__v": 1,
+                    "versions": [
+                        {
+                            "_id": "648c7c7516da04ad198c4849",
+                            "name": "martin",
+                            "model": "6489e1d1750a8b3d788d4033",
+                            "__v": 0,
+                            "products": [
+                                {
+                                    "_id": "648c9ea53a8a0f440e891968",
+                                    "brand": "volkswagen",
+                                    "model": "polo",
+                                    "price": 100.5,
+                                    "version": "martin",
+                                    "discount": 10,
+                                    "images": [],
+                                    "title": "peugeot 206",
+                                    "category": "autos",
+                                    "description": "1.6 naftero",
+                                    "currentStock": 10,
+                                    "freeShipping": true,
+                                    "color": "black",
+                                    "type": "NEW",
+                                    "outstanding": true,
+                                    "__v": 0
+                                },
+                                {
+                                    "_id": "648cbb2e507151f63f6b43aa",
+                                    "brand": "volkswagen",
+                                    "model": "polo",
+                                    "price": 100.5,
+                                    "version": "martin",
+                                    "discount": 10,
+                                    "images": [
+                                        "https://storage.googleapis.com/vagimport-images/1686944553291_peugeot 206_v0",
+                                        "https://storage.googleapis.com/vagimport-images/1686944554781_peugeot 206_v1",
+                                        "https://storage.googleapis.com/vagimport-images/1686944555915_peugeot 206_v2",
+                                        "https://storage.googleapis.com/vagimport-images/1686944557061_peugeot 206_v3"
+                                    ],
+                                    "title": "peugeot 206",
+                                    "category": "autos",
+                                    "description": "1.6 naftero",
+                                    "currentStock": 4,
+                                    "freeShipping": true,
+                                    "color": "black",
+                                    "type": "NEW",
+                                    "outstanding": true,
+                                    "__v": 0
+                                },
+                                {
+                                    "_id": "64926005cd5c0510bc3e83d0",
+                                    "brand": "volkswagen",
+                                    "model": "polo",
+                                    "price": 4000000,
+                                    "version": "martin",
+                                    "discount": 3,
+                                    "images": [],
+                                    "title": "Producto de prueba 1",
+                                    "category": "repuestos",
+                                    "description": "",
+                                    "currentStock": 80000,
+                                    "freeShipping": true,
+                                    "color": "black",
+                                    "type": "USED",
+                                    "outstanding": true,
+                                    "__v": 0
+                                }
+                            ],
+                            "cantidadDeProductos":3
+                        }
+                    ],
+                    "cantidadDeVersiones":2
+                },
+                {
+                    "versions": [],
+                    "_id": "6489e1ed750a8b3d788d403f",
+                    "name": "gol",
+                    "image": "gol.jpeg",
+                    "brand": "6489d82c1fc446dd67f3202d",
+                    "__v": 0,
+                    "cantidadDeVersiones":0
+                }
+            ],
+            "cantidadDeModelos":2
+        }
+    ],
+    "cantidadDeMarcas": 4
+}

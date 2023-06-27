@@ -8,6 +8,7 @@ import { CategoryModule } from 'src/category/category.module';
 import { ModelCarModule } from 'src/model-car/model-car.module';
 import { VersionModelModule } from 'src/version-model/version-model.module';
 import { UploadImageModule } from 'src/upload-image/upload-image.module';
+import { AdminModule } from 'src/admin/admin.module';
 
 
 
@@ -18,7 +19,8 @@ import { UploadImageModule } from 'src/upload-image/upload-image.module';
     CategoryModule,
     ModelCarModule,
     VersionModelModule,
-    UploadImageModule
+    UploadImageModule,
+    AdminModule
   ],
   controllers: [ProductsController],
   providers: [ProductsService],

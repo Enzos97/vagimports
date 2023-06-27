@@ -90,6 +90,31 @@ export class UploadImageService {
 
     return { imageUrls };
   }
+
+  async deleteFile(id: string) {
+    const projectId = 'vagimports-backend'; // Reemplaza con el ID de tu proyecto en Google Cloud
+    const bucketName = 'vagimport-images'; // Reemplaza con el nombre del bucket en Google Cloud Storage
+  
+    const storage = new Storage({ projectId });
+    const bucket = storage.bucket(bucketName);
+  
+    // Extrae el nombre del archivo de la URL
+    const fileName = id.substring(id.lastIndexOf('/') + 1);
+  
+    // Obtiene una referencia al archivo en el bucket
+    const file = bucket.file(fileName);
+  
+    try {
+    // Elimina el archivo del bucket
+    await file.delete();
+  
+    return { success: true };
+    } catch (error) {
+      // Maneja el error en caso de que ocurra alguna falla en la eliminación del archivo
+      console.error(`Error al eliminar el archivo ${fileName}: ${error}`);
+      return { success: false, error };
+    }
+  }
   create(createUploadImageDto: CreateUploadImageDto) {
     return 'This action adds a new uploadImage';
   }
